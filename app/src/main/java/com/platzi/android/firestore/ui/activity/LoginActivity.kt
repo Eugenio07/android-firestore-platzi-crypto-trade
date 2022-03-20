@@ -8,6 +8,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.platzi.android.firestore.R
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_trader.*
 
 /**
  * @author Santiago Carrillo
@@ -33,7 +35,17 @@ class LoginActivity : AppCompatActivity() {
 
 
     fun onStartClicked(view: View) {
-        startMainActivity("Santiago")
+
+        auth.signInAnonymously()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    startMainActivity(username.text.toString())
+                }else{
+                    showErrorMessage(view)
+                }
+            }
+
+       // startMainActivity("Santiago")
 
     }
 
