@@ -50,26 +50,20 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val userName = username.text.toString()
 
-                    firestoreService.findUserByID(userName, object : Callback<User>{
+                    firestoreService.findUserByID(userName, object : Callback<User> {
                         override fun onSuccess(result: User?) {
-                            if(result == null){
+                            if (result == null) {
                                 val user = User()
                                 user.username = userName
                                 saveUserAndStartMainActivity(user, view)
                             } else {
                                 startMainActivity(userName)
                             }
-
                         }
-
                         override fun onFailed(exception: Exception) {
                             showErrorMessage(view)
                         }
-
                     })
-
-
-                    //    startMainActivity(username.text.toString())
                 } else {
                     showErrorMessage(view)
                     view.isEnabled = true
@@ -86,6 +80,7 @@ class LoginActivity : AppCompatActivity() {
                 override fun onSuccess(result: Void?) {
                     startMainActivity(user.username)
                 }
+
                 override fun onFailed(exception: Exception) {
                     showErrorMessage(view)
                     view.isEnabled = true

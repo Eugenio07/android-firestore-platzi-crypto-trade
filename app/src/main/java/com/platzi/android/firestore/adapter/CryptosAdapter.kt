@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso
 class CryptosAdapter(val cryptosAdapterListener: CryptosAdapterListener) :
     RecyclerView.Adapter<CryptosAdapter.ViewHolder>() {
 
-    val cryptoList: List<Crypto> = ArrayList()
+    var cryptoList: List<Crypto> = ArrayList()
 
     class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         val image = view.findViewById<ImageView>(R.id.image)
