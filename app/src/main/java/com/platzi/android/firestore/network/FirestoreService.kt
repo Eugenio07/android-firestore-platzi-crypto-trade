@@ -14,11 +14,11 @@ class FirestoreService(val firebaseFirestore: FirebaseFirestore) {
             .addOnFailureListener { callback.onFailed(it) }
     }
 
-    fun updateUser(user: User, callback: Callback<User>) {
+    fun updateUser(user: User, callback: Callback<User>?) {
         firebaseFirestore.collection(USERS_COLLECTION_NAME).document(user.username)
             .update("cryptoList", user.cryptoList)
-            .addOnSuccessListener { callback.onSuccess(user) }
-            .addOnFailureListener { callback.onFailed(it) }
+            .addOnSuccessListener { callback?.onSuccess(user) }
+            .addOnFailureListener { callback?.onFailed(it) }
     }
 
     fun updateCrypto(crypto: Crypto) {
@@ -46,5 +46,31 @@ class FirestoreService(val firebaseFirestore: FirebaseFirestore) {
                 }
             }
             .addOnFailureListener { callback.onFailed(it) }
+    }
+
+    fun listenForUpdates(cryptos: List<Crypto>, listener: RealtimeDataListener<Crypto>){
+        val cryptoReference = firebaseFirestore.collection(CRYPTO_COLLECTION_NAME)
+        for(crypto in cryptos){
+            cryptoReference.document(crypto.getDocumentID()).addSnapshotListener { value, error ->
+                if(error != null){
+                    listener.onError(error)
+                }else if (value != null && value.exists()){
+                    listener.onDataChanged(value.toObject(Crypto::class.java)!!)
+                }
+            }
+        }
+    }
+
+    fun listenForUpdates(user: User, listener: RealtimeDataListener<User>){
+        val userReference = firebaseFirestore.collection(USERS_COLLECTION_NAME)
+
+        userReference.document(user.username).addSnapshotListener { value, error ->
+            if(error != null){
+                listener.onError(error)
+            }else if (value != null && value.exists()){
+                listener.onDataChanged(value.toObject(User::class.java)!!)
+            }
+        }
+
     }
 }
